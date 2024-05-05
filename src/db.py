@@ -6,7 +6,7 @@ from databases import Database
 
 load_dotenv()
 # Database url if none is passed the default one is used
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://jem:root1234@localhost/jem")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://jem:root@db/jem")
 
 # SQLAlchemy
 metadata = MetaData()
