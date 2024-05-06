@@ -4,11 +4,11 @@ from sqlalchemy import MetaData, create_engine
 from dotenv import load_dotenv
 from databases import Database
 
-load_dotenv()
-# Database url if none is passed the default one is used
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://jem:root@db/jemdb")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# SQLAlchemy
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+DATABASE_URL=os.environ["DATABASE_URL"]
+
 metadata = MetaData()
 engine = create_engine(DATABASE_URL)
 
