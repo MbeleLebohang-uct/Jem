@@ -7,14 +7,13 @@ from sqlalchemy import (
     String, 
     Uuid, 
     Table, 
-    func, 
-    event
+    func
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import text
 
 from src.db import metadata
-from src.ddl import firebase_send_notification
+
 
 organizations = Table(
     "organizations",
@@ -66,12 +65,10 @@ announcements = Table(
     Column("organization_id", Uuid, ForeignKey("organizations.id"), nullable=False),
     Column("created_by", JSONB, nullable=False),
     Column("publish_at", TIMESTAMP(timezone=True), nullable=False),
+    Column("published", Boolean, nullable=False, default=False),
     Column("metadata", JSONB),
     Column("deleted", Boolean, nullable=False, default=False),
     Column("deleted_at", TIMESTAMP(timezone=True)),
     Column("created_at", TIMESTAMP(timezone=True), nullable=False, server_default=func.current_timestamp()),
     Column("updated_at", TIMESTAMP(timezone=True), nullable=False, onupdate=func.current_timestamp())
-)
-
-print('---------------------------- Creating Events -----------------------------')
-event.listen(messages, 'after_create', firebase_send_notification)
+) 

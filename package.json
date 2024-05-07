@@ -1,0 +1,13 @@
+{
+  "name": "jem",
+  "version": "1.0.0",
+  "description": "Project that has supabase so that we can use the CLI",
+  "author": "Mbele Lebohang",
+  "license": "ISC",
+  "devDependencies": {
+    "supabase": "^1.165.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.13.0"
+  }
+}

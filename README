@@ -1,6 +1,6 @@
-#### Create migrations
+#### Setup supabase
 
-`$ docker-compose run app alembic revision --autogenerate -m "<migration>"`
+`$ npm i && cd supabase && npx supabase start`
 
 #### Upgrade migrations
 
