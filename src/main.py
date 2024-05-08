@@ -35,7 +35,7 @@ jobstores = {
 
 scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Africa/Johannesburg') 
 
-@scheduler.scheduled_job('interval', seconds=6)
+@scheduler.scheduled_job('interval', seconds=30)
 async def create_user_messages_job():
     await create_user_messages()
     
