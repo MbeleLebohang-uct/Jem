@@ -1,4 +1,3 @@
--- CreateEnum
 CREATE TYPE "user_role" AS ENUM ('admin', 'employee');
 
 CREATE TABLE "users" (
@@ -32,6 +31,7 @@ CREATE TABLE "messages" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "body" TEXT NOT NULL,
     "owner_id" UUID NOT NULL,
+    "announcement_id" UUID NOT NULL,
     "metadata" JSONB,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
     "deleted_at" TIMESTAMP(3),
@@ -57,10 +57,10 @@ CREATE TABLE "announcements" (
     CONSTRAINT "announcements_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
-
 ALTER TABLE "users" ADD CONSTRAINT "users_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE "messages" ADD CONSTRAINT "messages_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE "messages" ADD CONSTRAINT "messages_announcement_id_fkey" FOREIGN KEY ("announcement_id") REFERENCES "announcements"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE "announcements" ADD CONSTRAINT "announcements_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -50,6 +50,7 @@ messages = Table(
     Column("id", Uuid, primary_key=True, index=True, server_default=text("gen_random_uuid()")),
     Column("body", String, nullable=False),
     Column("owner_id", Uuid, ForeignKey("users.id"), nullable=False),
+    Column("announcement_id", Uuid, ForeignKey("announcements.id"), nullable=False),
     Column("metadata", JSONB),
     Column("deleted", Boolean, nullable=False, default=False),
     Column("deleted_at", TIMESTAMP(timezone=True)),
