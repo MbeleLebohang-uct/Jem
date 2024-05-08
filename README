@@ -2,7 +2,16 @@
 
 `$ npm i && cd supabase && npx supabase start`
 
-#### Upgrade migrations
+Just for control, reset db
 
-`$ docker-compose run app alembic upgrade head`
+`$ npx supabase db reset`
+
+
+#### Run FastAPI application
+
+`$ docker-compose build --no-cache`
+
+Bring up the container
+
+`$ docker-compose up --build`
 

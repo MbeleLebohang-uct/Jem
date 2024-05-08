@@ -1,7 +1,7 @@
 {
   "name": "jem",
   "version": "1.0.0",
-  "description": "Project that has supabase so that we can use the CLI",
+  "description": "Project that has supabase so that we can use the CLI - Avoiding to require the assesor to install globally",
   "author": "Mbele Lebohang",
   "license": "ISC",
   "devDependencies": {
