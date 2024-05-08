@@ -1,5 +1,5 @@
 #### Setup supabase
-The database provider we will use is Supabase and we need to install the [Supabase CLI](https://supabase.com/docs/guides/cli/getting-started?queryGroups=platform&platform=npx). For ease of use, we are using npm to install this cli tool. 
+The database provider we will use is Supabase and we need to install the (Supabase CLI)[https://supabase.com/docs/guides/cli/getting-started?queryGroups=platform&platform=npx]. For ease of use, we are using npm to install this cli tool. 
 
 The following command will install the tool and start supabase.
 
@@ -30,7 +30,7 @@ Bring up the container using this
 
 
 #### Dashboard simulation - creating announcements
-We will use [Postman](https://www.postman.com/downloads/) or similar [tool](https://insomnia.rest/download) to create `announcements`.
+We will use (Postman)[https://www.postman.com/downloads/] or similar (tool)[https://insomnia.rest/download] to create `announcements`.
 
 The following curl can be use to create an announcement in the database. You can update the `publish_at` field to specify the time you want the
 announcement to go out.
