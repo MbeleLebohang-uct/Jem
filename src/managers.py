@@ -22,6 +22,6 @@ class AnnouncementManager:
     
 class MessageManager:
     @classmethod
-    async def create(cls, **data):
-        query = messages.insert().values(**data)
+    async def create_batch(cls, data: list):
+        query = messages.insert().values(data)
         return await database.execute(query)

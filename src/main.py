@@ -1,14 +1,13 @@
 from contextlib import asynccontextmanager
-from datetime import datetime, timedelta
+from datetime import datetime
 from fastapi import FastAPI, HTTPException
 import pytz
-from sqlalchemy import and_, select
 from starlette.middleware.cors import CORSMiddleware
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.memory import MemoryJobStore
 from src.db import engine, metadata, database
-from src.models import messages
-from src.managers import AnnouncementManager, UserManager, MessageManager
+from src.jobs import create_user_messages
+from src.managers import AnnouncementManager, UserManager
 from src.schema import AnnouncementInput, UserModel
 
 metadata.create_all(engine)
@@ -36,36 +35,11 @@ jobstores = {
 
 scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Africa/Johannesburg') 
 
-@scheduler.scheduled_job('interval', seconds=5)
-async def publish_announcements():
-    now = datetime.now() + timedelta(hours=2) # Timezone workaround
-    announcements = await AnnouncementManager.all(lambda model: model.select().where(model.c.publish_at <= now))
-        # Get all users in the announcement.org_id who has no message with message.announcement_id == announcement.id
-    for announcement in announcements:
-        print(f"announcement.id: {announcement.id}")
-        users_to_send_messages = await UserManager.all(
-            lambda model: model.select()
-                .where(
-                    and_(
-                        model.c.organization_id == announcement.organization_id,
-                        ~model.c.id.in_(select(messages.c.owner_id).where(messages.c.announcement_id == announcement.id))
-                    )
-                )
-        )
-        
-        for user in users_to_send_messages:
-            await MessageManager.create(
-                created_by={"name":"user", "role":"Admin", "id": "authenticated@user.com"},
-                published=False,
-                deleted=False,
-                updated_at=datetime.now()
-            )
-            break
+@scheduler.scheduled_job('interval', seconds=6)
+async def create_user_messages_job():
+    await create_user_messages()
+    
                 
-        print(f"users_to_send_messages: {len(users_to_send_messages)}")
-    print(f"scheduled_job_1: {len(announcements)}")
-    print(f"scheduled_job_1t: {[x.publish_at for x in announcements]}")
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print('--------- startup -----------')
