@@ -19,6 +19,11 @@ class AnnouncementManager:
         query = announcements.insert().values(**data)
         return await database.execute(query)
     
+    @classmethod
+    async def update(cls, id, **data):
+        query = announcements.update().where(announcements.c.id==id).values(**data)
+        return await database.execute(query)
+    
     
 class MessageManager:
     @classmethod
