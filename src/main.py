@@ -1,9 +1,12 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from datetime import datetime
+from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.jobstores.memory import MemoryJobStore
 from src.db import engine, metadata, database
-from src.managers import UserManager
-from src.schema import User as SchemaUser
+from src.managers import AnnouncementManager, UserManager
+from src.schema import AnnouncementInput, UserModel
 
 metadata.create_all(engine)
 
@@ -24,15 +27,45 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+jobstores = {
+    'default': MemoryJobStore()
+}
+
+scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Africa/Johannesburg') 
+
+@scheduler.scheduled_job('interval', seconds=5)
+def scheduled_job_1():
+    print("scheduled_job_1")
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print('--------- startup -----------')
     await database.connect()
     yield
+    print('--------- shutdown -----------')
     await database.disconnect()
+    scheduler.shutdown()
 
 app.router.lifespan_context = lifespan
+scheduler.start()
+
 
 @app.get("/")
 async def read_root():
     users = await UserManager.all()
-    return [SchemaUser(**user).model_dump() for user in users]
+    return [UserModel(**user).model_dump() for user in users]
+
+@app.post("/announcement/")
+async def create_announcement(announcement: AnnouncementInput):
+    data = announcement.model_dump()
+    try:
+        await AnnouncementManager.create(
+            **data, 
+            created_by={"name":"user", "role":"Admin", "id": "authenticated@user.com"},
+            published=False,
+            deleted=False,
+            updated_at=datetime.now()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"message": "Announcement created successfully"}

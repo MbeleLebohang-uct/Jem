@@ -1,4 +1,4 @@
-from src.models import users, organizations
+from src.models import users, organizations, announcements
 from src.db import database
 
 class UserManager:
@@ -13,8 +13,8 @@ class UserManager:
         return await database.fetch_one(query)
 
     @classmethod
-    async def create(cls, **user):
-        query = users.insert().values(**user)
+    async def create(cls, **data):
+        query = users.insert().values(**data)
         return await database.execute(query)
     
     
@@ -30,7 +30,23 @@ class OrganizationManager:
         return await database.fetch_one(query)
 
     @classmethod
-    async def create(cls, **organization):
-        query = organizations.insert().values(**organization)
+    async def create(cls, **data):
+        query = organizations.insert().values(**data)
         return await database.execute(query)
     
+    
+class AnnouncementManager:
+    @classmethod
+    async def all(cls):
+        query = announcements.select()
+        return await database.fetch_all(query)
+    
+    @classmethod
+    async def get(cls, id):
+        query = announcements.select().where(announcements.c.id == id)
+        return await database.fetch_one(query)
+
+    @classmethod
+    async def create(cls, **data):
+        query = announcements.insert().values(**data)
+        return await database.execute(query)
